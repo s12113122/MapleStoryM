@@ -266,6 +266,8 @@
                     }
                 },
                 calc_core() {
+                    let skills = JSON.stringify(this.skills);
+                    localStorage.setItem('skills', skills);
                     this.$set(this, "temp", [])
                     this.$set(this, "coreArray", [])
                     // this.initData = "532,243,614,265,612,264,621,451,235,365,362,213";
@@ -278,7 +280,12 @@
 
             },
             mounted() {
-                this.calc_core();
+                // this.calc_core();
+                let skills = localStorage.getItem('skills');
+                console.log('skills',skills);
+                if (skills) {
+                    this.skills = JSON.parse(skills);
+                }
             }
 
         })
