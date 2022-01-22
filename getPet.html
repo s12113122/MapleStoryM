@@ -10,7 +10,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-        <title>說喀就喀 寵物抽獎體驗中</title>
+    <title>說喀就喀 寵物抽獎體驗中</title>
 </head>
 
 <body>
@@ -35,7 +35,8 @@
                     <template>
                         <h1>機率設定</h1>
                         <!--     <el-input-number v-model="chanceInputStep"> </el-input-number> -->
-                        <el-table :data="tableData" style="width: 100%">
+                        <el-table border stripe :header-align="center" :data="tableData" class="text-center"
+                            style="width: 100%">
                             </el-table-column>
                             <el-table-column label="物品名稱">
                                 <template slot-scope="scope">
@@ -44,7 +45,6 @@
                             </el-table-column>
                             <el-table-column label="機率">
                                 <template slot-scope="scope">
-                                    <span style="margin-left: 10px">{{ scope.row.p }}%</span>
                                     <el-input-number style="margin-left:8px" v-model="scope.row.p"
                                         controls-position="right" :step="0.01"
                                         @change="(newValue) => {countTotalChance(newValue, scope.$index)}">
@@ -52,6 +52,16 @@
 
                                 </template>
                             </el-table-column>
+
+                            <el-table-column label="價格">
+                                <template slot-scope="scope">
+                                    <el-input-number v-model="scope.row.price" controls-position="right">
+                                    </el-input-number>
+
+                                </template>
+                            </el-table-column>
+
+
                         </el-table>
                     </template>
 
@@ -73,7 +83,8 @@
                     </div>
                     <pre v-if="runnningTest">{{ testMessage }}</pre>
                     <div v-if="testResult.length > 0 && runnningTest === false">
-                        <h2>測試結果</h2>
+                        <h2>測試結果 </h2>
+                        總獲利: {{  formatNumber(total()) }}
                         <el-table :data="testResult" style="width: 100%">
                             <el-table-column prop="name" label="物品名稱">
                             </el-table-column>
@@ -82,6 +93,22 @@
                             <el-table-column prop="chance" label="出現機率">
                             </el-table-column>
                             <el-table-column prop="chanceBySetting" label="設定的機率">
+                            </el-table-column>
+                            <el-table-column prop="price" label="價錢">
+                                <template slot-scope="scope">
+                                    <span>
+                                        {{ formatNumber(scope.row.price)}}
+                                    </span>
+
+                                </template>
+                            </el-table-column>
+                            <el-table-column prop="price" label="數量*價錢">
+                                <template slot-scope="scope">
+                                    <span>
+                                        {{ formatNumber(scope.row.count * scope.row.price)}}
+                                    </span>
+
+                                </template>
                             </el-table-column>
                         </el-table>
                     </div>
@@ -114,43 +141,53 @@
             tableData: [
                 {
                     name: "[奇蹟黑]普蘭交換",
-                    p: 3.32
+                    p: 3.32,
+                    price: 677276086
                 },
                 {
                     name: "[奇蹟黑]普林交換",
-                    p: 3.32
+                    p: 3.32,
+                    price: 674276086
                 }, {
                     name: "[奇蹟黑]小雪熊交換",
-                    p: 3.32
+                    p: 3.32,
+                    price: 665276086
                 }, {
                     name: "[奇蹟藍]狗狗交換",
-                    p: 9.80
+                    p: 9.80,
+                    price: 15529012
                 }, {
                     name: "[奇蹟藍]喵喵交換",
-                    p: 9.80
+                    p: 9.80,
+                    price: 18529012
                 }, {
                     name: "[奇蹟藍]倉鼠交換",
-                    p: 9.80
+                    p: 9.80,
+                    price: 17529012
                 }, {
                     name: "[奇蹟銀]辣魚交換",
-                    p: 12.00
+                    p: 12.00,
+                    price: 3000000
                 }, {
                     name: "[奇蹟銀]威特貝里交換",
-                    p: 12.00
-                },
-                {
+                    p: 12.00,
+                    price: 4000000
+                }, {
                     name: "奇蹟黑生命之水",
-                    p: 6.64
-                },
-                {
+                    p: 6.64,
+                    price: 149789504
+                }, {
                     name: "優質生命水(15天)3個",
-                    p: 7
+                    p: 7,
+                    price: 47944236
                 }, {
                     name: "有機食品20個",
-                    p: 11.55
+                    p: 11.55,
+                    price: 20000000
                 }, {
                     name: "有機食品30個",
-                    p: 11.45
+                    p: 11.45,
+                    price: 25000000
                 },
             ],
             testTimes: 10000,
@@ -190,11 +227,13 @@
                             this.runnningTest = false;
                             // create test result
                             Object.keys(chance).forEach((_, index) => {
+                                console.log('this.tableData[index]', this.tableData[index]);
                                 this.testResult.push({
                                     name: _,
                                     count: chance[_],
                                     chance: Math.round((chance[_] / this.testTimes) * 100) + "%",
-                                    chanceBySetting: this.tableData[index].p + "%"
+                                    chanceBySetting: this.tableData[index].p + "%",
+                                    price: this.tableData[index].price,
                                 });
                             });
                         } else {
@@ -220,7 +259,6 @@
             // put the item on the number line and check if on the range
             getItemByChange() {
                 const r = Math.random() * 100;
-                console.log('r', r);
                 let count = 0;
                 let item;
                 // 從第一個開始排，看哪個會到隨機數字，有到他的範圍抽出來內的話，就抽出來
@@ -233,8 +271,6 @@
                     // return false 下一圈
                     // 0.7 >= 0.5 && 0.7 <= 0.8(count = count + _.p) 上一圈判斷失敗加的
                     // return true 找到了！
-                    console.log('i', i);
-                    console.log('count', count);
                     if (r >= count && r <= count + _.p) {
                         // yes, it's in range!
                         item = _;
@@ -283,7 +319,36 @@
                 this.tableData[next_index].p = Number(
                     (this.tableData[next_index].p + number_to_plus).toFixed(4)
                 );
-            }
+            },
+            formatNumber(num, precision, separator) {
+                let parts;
+                // 判斷是否為數字
+                // eslint-disable-next-line no-restricted-globals
+                if (!isNaN(parseFloat(num)) && isFinite(num)) {
+                    // 把類似 .5, 5. 之類的數據轉化成0.5, 5, 為數據精度處理做準, 至於為什麼
+                    // 不在判斷中直接寫 if (!isNaN(num = parseFloat(num)) && isFinite(num))
+                    // 是因為parseFloat有一個奇怪的精度問題, 比如 parseFloat(12312312.1234567119)
+                    // 的值變成了 12312312.123456713
+                    // eslint-disable-next-line no-param-reassign
+                    num = Number(num);
+                    // 處理小數點位數
+                    // eslint-disable-next-line no-param-reassign
+                    num = (typeof precision !== 'undefined' ? num.toFixed(precision) : num).toString();
+                    // 分離數字的小數部分和整數部分
+                    parts = num.split('.');
+                    // 整數部分加[separator]分隔, 借用一個著名的正則表達式
+                    parts[0] = parts[0].toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1${separator || ','}`);
+
+                    return parts.join('.');
+                }
+                return 0;
+            },
+            total() {
+                const map = this.testResult.map(item => item.count * item.price);
+                const total = map.reduce((a, b) => a + b);
+                return total;
+            },
+
 
         },
         mounted() {
@@ -295,7 +360,7 @@
 </script>
 
 <style>
-    /* .testprogress {
+    .testprogress {
         margin-top: 1em;
         text-align: center;
     }
@@ -303,7 +368,7 @@
     pre {
         margin-top: 1em;
         text-align: left;
-    } */
+    }
 </style>
 
 
