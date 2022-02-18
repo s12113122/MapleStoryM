@@ -10,121 +10,88 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
         integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <title>說喀就喀 體健中心</title>
+    <title>說喀就喀 體檢中心</title>
 </head>
 
 <body>
-
+    <style>
+        .el-input-group__prepend {
+            width: 110px;
+        }
+    </style>
     <div id="app">
 
         <div class="container p-2 w-100">
             <div class="row">
-                <div class="col-12 text-center">
-                    <h2 style="color:#F56C6C">說喀就喀 體健中心</h2>
-        
 
+                <el-card class="box-card w-100  text-center">
+                    <div slot="header" class="clearfix">
+                        <h2 style="color:#F56C6C">說喀就喀 體檢中心</h2>
+                        <p style="color:#909399">
+                            參考巴哈傷害公式表:https://forum.gamer.com.tw/C.php?bsn=29461&snA=14900
+                        </p>
+                        <p style="color:#909399">
+                            因應裝備調整、星火調整會不太清楚傷害是否變高還是變低。則使用如下填入表功數值即可算出
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-4 text-center mb-1">
+                            <el-input type="number" placeholder="物/魔攻" v-model="attack">
+                                <template slot="prepend">物/魔攻</template>
+                            </el-input>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-1">
+                            <el-input type="number" placeholder="物/魔攻%" v-model="attack_percent">
+                                <template slot="prepend">物/魔攻%</template>
+                            </el-input>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-1">
+                            <el-input type="number" placeholder="物/魔傷%" v-model="damage">
+                                <template slot="prepend">物/魔傷%</template>
+                            </el-input>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-1">
+                            <el-input type="number" placeholder="B傷%" v-model="boss_damage">
+                                <template slot="prepend">B傷%</template>
+                            </el-input>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-1">
+                            <el-input type="number" placeholder="爆傷%" v-model="crit">
+                                <template slot="prepend">爆傷%</template>
+                            </el-input>
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-1">
+                            <el-input type="number" placeholder="技能倍率%" v-model="skill_percent">
+                                <template slot="prepend">技能倍率%</template>
+                            </el-input>
+                        </div>
 
-                    <!-- 一般傷害 =  物/魔攻 * 技能倍率% * (1+物/魔傷%)*(1+物/魔攻%+技能倍率%*(B傷%+10%*0))*(1+終傷%+超技能加成的終傷%) -->
-                    
+                        <div class="col-12 col-md-4 text-center mb-1">
+                            <el-input type="number" placeholder="終傷%" v-model="finally_attack">
+                                <template slot="prepend">終傷%</template>
+                            </el-input>
+                        </div>
 
-
-                    <!--   top buttons -->
-                    <template>
-                        <el-button @click="addItem">新增物品</el-button>
-                        <el-button @click="showTestDialog">測試</el-button>
-                        <el-button type="primary" @click="showGetItemMessage">開獎</el-button>
-                    </template>
-
-                    <!--   the main ui -->
-                    <template>
-                        <h1>機率設定</h1>
-                        <!--     <el-input-number v-model="chanceInputStep"> </el-input-number> -->
-                        <el-table border stripe :header-align="center" :data="tableData" class="text-center"
-                            style="width: 100%">
-                            </el-table-column>
-                            <el-table-column label="物品名稱">
-                                <template slot-scope="scope">
-                                    <el-input v-model="scope.row.name" />
-                                </template>
-                            </el-table-column>
-                            <el-table-column label="機率">
-                                <template slot-scope="scope">
-                                    <el-input-number style="margin-left:8px" v-model="scope.row.p"
-                                        controls-position="right" :step="0.01"
-                                       >
-                                    </el-input-number>
-
-                                </template>
-                            </el-table-column>
-
-                            <el-table-column label="價格">
-                                <template slot-scope="scope">
-                                    <el-input-number v-model="scope.row.price" controls-position="right">
-                                    </el-input-number>
-
-                                </template>
-                            </el-table-column>
-
-
-                        </el-table>
-                    </template>
-
-
-
-                </div>
+                        <div class="col-12 col-md-4 text-center mb-1">
+                            <el-input max="100" type="number" placeholder="爆率" v-model="crit_percent">
+                                <template slot="prepend">爆率</template>
+                            </el-input>
+                        </div>
+                    </div>
+                    <div class="row mt-1">
+                        <!-- attack * skill_percent * (1+damage) *(1+attack_percent+skill_percent*(boss_damage+10%*0)) * (1+finally_attack) -->
+                        <div class="col-12 col-md-4 text-center mb-1" style="color:#67C23A">
+                            BOSS傷害: {{ this.normal()}}
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-1" style="color:#E6A23C">
+                            爆擊傷害: {{this.crit_damage()}}
+                        </div>
+                        <div class="col-12 col-md-4 text-center mb-1" style="color:#606266">
+                            期望值輸出(計算爆率): {{this.expect()}}
+                        </div>
+                    </div>
+                </el-card>
             </div>
-
-            <!--  the test dialog -->
-            <el-dialog title="測試抽獎機率" :visible.sync="testDialogVisible" width="100%" center>
-                <div style="text-align:center;">
-                    <span>要測試幾次呢？</span>
-
-                    <el-input-number v-model="testTimes" controls-position="right">
-                    </el-input-number>
-                    <div class="testprogress">
-                        <el-progress type="circle" :percentage="testPercentage"
-                            :status="testPercentage >= 100 ? 'success' : ''"></el-progress>
-                    </div>
-                    <pre v-if="runnningTest">{{ testMessage }}</pre>
-                    <div v-if="testResult.length > 0 && runnningTest === false">
-                        <h2>測試結果 </h2>
-                        <span style="color:#F56C6C">
-                            總獲利: {{ formatNumber(total()) }}
-                        </span>
-                        <el-table :data="testResult" style="width: 100%">
-                            <el-table-column prop="name" label="物品名稱">
-                            </el-table-column>
-                            <el-table-column prop="count" label="出現次數">
-                            </el-table-column>
-                            <el-table-column prop="chance" label="出現機率">
-                            </el-table-column>
-                            <el-table-column prop="chanceBySetting" label="設定的機率">
-                            </el-table-column>
-                            <el-table-column prop="price" label="價錢">
-                                <template slot-scope="scope">
-                                    <span>
-                                        {{ formatNumber(scope.row.price)}}
-                                    </span>
-
-                                </template>
-                            </el-table-column>
-                            <el-table-column prop="price" label="數量*價錢">
-                                <template slot-scope="scope">
-                                    <span>
-                                        {{ formatNumber(scope.row.count * scope.row.price)}}
-                                    </span>
-
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                </div>
-                <span slot="footer" class="dialog-footer">
-                    <el-button @click="testDialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="startTest">開始</el-button>
-                </span>
-            </el-dialog>
-
         </div>
 
     </div>
@@ -133,7 +100,7 @@
 
 
 <!-- import Vue before Element -->
-<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/vue@2"></script>
 <!-- import JavaScript -->
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 
@@ -143,218 +110,34 @@
     var app = new Vue({
         el: '#app',
         data: {
-            // p means Probability, init data
-            tableData: [
-                {
-                    name: "[奇蹟黑]普蘭交換",
-                    p: 3.32,
-                    price: 677276086
-                },
-                {
-                    name: "[奇蹟黑]普林交換",
-                    p: 3.32,
-                    price: 674276086
-                }, {
-                    name: "[奇蹟黑]小雪熊交換",
-                    p: 3.32,
-                    price: 665276086
-                }, {
-                    name: "[奇蹟藍]狗狗交換",
-                    p: 9.80,
-                    price: 15529012
-                }, {
-                    name: "[奇蹟藍]喵喵交換",
-                    p: 9.80,
-                    price: 18529012
-                }, {
-                    name: "[奇蹟藍]倉鼠交換",
-                    p: 9.80,
-                    price: 17529012
-                }, {
-                    name: "[奇蹟銀]辣魚交換",
-                    p: 12.00,
-                    price: 3000000
-                }, {
-                    name: "[奇蹟銀]威特貝里交換",
-                    p: 12.00,
-                    price: 4000000
-                }, {
-                    name: "奇蹟黑生命之水",
-                    p: 6.64,
-                    price: 149789504
-                }, {
-                    name: "優質生命水(15天)3個",
-                    p: 7,
-                    price: 47944236
-                }, {
-                    name: "有機食品20個",
-                    p: 11.55,
-                    price: 20000000
-                }, {
-                    name: "有機食品30個",
-                    p: 11.45,
-                    price: 25000000
-                },
-            ],
-            testTimes: 10000,
-            testMessage: "waiting for test...",
-            runnningTest: true,
-            runnningTestDone: false,
-            testResult: [],
-            testDialogVisible: false,
-            chanceInputStep: 0.1,
-            testPercentage: 0
+            attack: 30000,
+            attack_percent: 100,
+            damage: 100,
+            boss_damage: 100,
+            crit: 100,
+            skill_percent: 300,
+            finally_attack: 10,
+            crit_percent: 50,
         },
         methods: {
-            showTestDialog() {
-                // just reset data
-                this.testMessage = "waiting for test...";
-                this.runnningTest = true;
-                this.testResult = [];
-                this.testDialogVisible = true;
-                this.testPercentage = 0;
+            normal() {
+                const total = this.attack * (this.skill_percent / 100) * (1 + (this.damage / 100)) *
+                    (1 + (this.attack_percent / 100) + (this.skill_percent / 100) * ((this.boss_damage / 100) + 10 * 0)) * (1 + (this.finally_attack / 100))
+                return Number(total).toFixed(2);
             },
-            startTest() {
-                // setup variables
-                this.runnningTest = true;
-                this.testResult = [];
-                this.testPercentage = 0;
-                var chance = {};
-                this.tableData.forEach((i) => {
-                    chance[i.name] = 0;
-                });
-
-                var i = 0;
-                // run in next tick (after vue view updated)
-                this.$nextTick(() => {
-                    var interval = setInterval(() => {
-                        if (i === this.testTimes) {
-                            clearInterval(interval);
-                            this.runnningTest = false;
-                            // create test result
-                            Object.keys(chance).forEach((_, index) => {
-                                console.log('this.tableData[index]', this.tableData[index]);
-                                this.testResult.push({
-                                    name: _,
-                                    count: chance[_],
-                                    chance: Math.round((chance[_] / this.testTimes) * 100) + "%",
-                                    chanceBySetting: this.tableData[index].p + "%",
-                                    price: this.tableData[index].price,
-                                });
-                            });
-                        } else {
-                            // get the item, render testMessage update chance coutner
-                            const item = this.getItemByChange();
-                            chance[item.name]++;
-                            // this.testMessage = JSON.stringify(item, null, 4);
-                            this.testMessage = item;
-                            i++;
-                        }
-                        // update the progress bar
-                        this.testPercentage = parseInt((i / this.testTimes) * 100);
-                    }, 1);
-                });
+            crit_damage() {
+                const normal = this.attack * (this.skill_percent / 100) * (1 + (this.damage / 100)) *
+                    (1 + (this.attack_percent / 100) + (this.skill_percent / 100) * ((this.boss_damage / 100) + 0.1 * 0)) * (1 + (this.finally_attack / 100))
+                const total = normal * (1 + (this.crit / 100) + 0.2)
+                return Number(total).toFixed(2);
             },
-            // add new item to the list
-            addItem() {
-                this.tableData.push({
-                    name: "new Item",
-                    p: 0
-                });
-            },
-            // put the item on the number line and check if on the range
-            getItemByChange() {
-                const r = Math.random() * 100;
-                let count = 0;
-                let item;
-                // 從第一個開始排，看哪個會到隨機數字，有到他的範圍抽出來內的話，就抽出來
-
-                for (let i = 0; i < this.tableData.length; i++) {
-                    let _ = this.tableData[i];
-                    // console.log("count", r, count, count + _.p);
-                    // 假設 r 是 0.7, 第一圈判斷開始
-                    // 0.7 >= 0 && 0.7 <= 0 + 0.5
-                    // return false 下一圈
-                    // 0.7 >= 0.5 && 0.7 <= 0.8(count = count + _.p) 上一圈判斷失敗加的
-                    // return true 找到了！
-                    if (r >= count && r <= count + _.p) {
-                        // yes, it's in range!
-                        item = _;
-                        break;
-                    } else {
-                        // not in range, going to next loop
-                        count = count + _.p;
-                    }
-                }
-                return item;
-            },
-            showGetItemMessage() {
-                const item = this.getItemByChange();
-                this.$confirm(
-                    `您抽到的是 『${item.name}』, 他有 ${item.p}%的機率被抽中`,
-                    "開獎囉！",
-                    {
-                        confirmButtonText: "再抽一次",
-                        cancelButtonText: "取消"
-                        // type: "warning"
-                    }
-                ).then(() => {
-                    this.showGetItemMessage();
-                });
-            },
-            getNextAvaiableItemIndex(currentIndex) {
-                let index = currentIndex - 1;
-                if (index < 0) index = this.tableData.length - 1;
-
-                if (this.tableData[index].p <= 0) {
-                    index--;
-                }
-
-                return index;
-            },
-            // when the value changed, we must make sure the sum of items chance is "1"
-            countTotalChance(value, index) {
-                var total = 0;
-                this.tableData.forEach((_) => {
-                    total += _.p;
-                });
-                var number_to_plus = (number_to_plus = 1 - total);
-                number_to_plus = parseFloat(number_to_plus.toFixed(4));
-
-                let next_index = this.getNextAvaiableItemIndex(index);
-                this.tableData[next_index].p = Number(
-                    (this.tableData[next_index].p + number_to_plus).toFixed(4)
-                );
-            },
-            formatNumber(num, precision, separator) {
-                let parts;
-                // 判斷是否為數字
-                // eslint-disable-next-line no-restricted-globals
-                if (!isNaN(parseFloat(num)) && isFinite(num)) {
-                    // 把類似 .5, 5. 之類的數據轉化成0.5, 5, 為數據精度處理做準, 至於為什麼
-                    // 不在判斷中直接寫 if (!isNaN(num = parseFloat(num)) && isFinite(num))
-                    // 是因為parseFloat有一個奇怪的精度問題, 比如 parseFloat(12312312.1234567119)
-                    // 的值變成了 12312312.123456713
-                    // eslint-disable-next-line no-param-reassign
-                    num = Number(num);
-                    // 處理小數點位數
-                    // eslint-disable-next-line no-param-reassign
-                    num = (typeof precision !== 'undefined' ? num.toFixed(precision) : num).toString();
-                    // 分離數字的小數部分和整數部分
-                    parts = num.split('.');
-                    // 整數部分加[separator]分隔, 借用一個著名的正則表達式
-                    parts[0] = parts[0].toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1${separator || ','}`);
-
-                    return parts.join('.');
-                }
-                return 0;
-            },
-            total() {
-                const map = this.testResult.map(item => item.count * item.price);
-                const total = map.reduce((a, b) => a + b);
-                return total;
-            },
-
+            expect() {
+                const normal = this.attack * (this.skill_percent / 100) * (1 + (this.damage / 100)) *
+                    (1 + (this.attack_percent / 100) + (this.skill_percent / 100) * ((this.boss_damage / 100) + 0.1 * 0)) * (1 + (this.finally_attack / 100))
+                const crit_damage = normal * (1 + (this.crit / 100) + 0.2);
+                const total = (1 - (this.crit_percent / 100)) * normal + (this.crit_percent / 100) * crit_damage;
+                return Number(total).toFixed(2);
+            }
 
         },
         mounted() {
@@ -365,17 +148,8 @@
 
 </script>
 
-<style>
-    .testprogress {
-        margin-top: 1em;
-        text-align: center;
-    }
 
-    pre {
-        margin-top: 1em;
-        text-align: left;
-    }
-</style>
+
 
 
 
