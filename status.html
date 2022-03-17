@@ -20,7 +20,16 @@
         }
     </style>
     <div id="app">
+        <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
+            active-text-color="#ffd04b">
 
+            <el-menu-item index="1"><a href="https://s12113122.github.io/MapleStoryM/core.html" target="_blank">尋找核心</a>
+            </el-menu-item>
+            <el-menu-item index="2"><a href="https://s12113122.github.io/MapleStoryM/getPet.html"
+                    target="_blank">寵物抽抽樂</a></el-menu-item>
+            <el-menu-item index="3"><a href="https://s12113122.github.io/MapleStoryM/status.html"
+                    target="_blank">體檢中心</a></el-menu-item>
+        </el-menu>
         <div class="container p-2 w-100">
             <div class="row">
 
@@ -110,14 +119,14 @@
     var app = new Vue({
         el: '#app',
         data: {
-            attack: 30000,
-            attack_percent: 100,
-            damage: 100,
-            boss_damage: 100,
-            crit: 100,
+            attack: 36104,
+            attack_percent: 157.3,
+            damage: 98.8,
+            boss_damage: 152.7,
+            crit: 410.2,
             skill_percent: 300,
-            finally_attack: 10,
-            crit_percent: 50,
+            finally_attack: 32,
+            crit_percent: 100,
         },
         methods: {
             normal() {
@@ -141,6 +150,220 @@
 
         },
         mounted() {
+            let temp = [
+
+
+
+
+                {
+                    // boss_damage: 100,
+                    // crit: 120,
+                    skill_percent: 100,
+                    color: 'red',
+                },
+                {
+                    // boss_damage: 110,
+                    // crit: 100,
+                    skill_percent: 100,
+                    color: 'green',
+                },
+
+
+
+
+                {
+                    // boss_damage: 100,
+                    // crit: 120,
+                    skill_percent: 300,
+                    color: 'red',
+                },
+                {
+                    // boss_damage: 110,
+                    // crit: 100,
+                    skill_percent: 300,
+                    color: 'green',
+                },
+
+
+
+
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 400,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 400,
+                    color: 'green',
+                },
+
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 350,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 350,
+                    color: 'green',
+                },
+
+
+
+
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 210,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 210,
+                    color: 'green',
+                },
+
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 200,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 200,
+                    color: 'green',
+                },
+
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 180,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 180,
+                    color: 'green',
+                },
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 175,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 175,
+                    color: 'green',
+                },
+
+                // {
+                //     boss_damage: 100,
+                //     crit: 120,
+                //     skill_percent: 170,
+                //     color: 'red',
+                // },
+                // {
+                //     boss_damage: 110,
+                //     crit: 100,
+                //     skill_percent: 170,
+                //     color: 'green',
+                // },
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 168,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 168,
+                    color: 'green',
+                },
+
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 167,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 167,
+                    color: 'green',
+                },
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 166,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 166,
+                    color: 'green',
+                },
+
+                {
+                    boss_damage: 100,
+                    crit: 120,
+                    skill_percent: 165,
+                    color: 'red',
+                },
+                {
+                    boss_damage: 110,
+                    crit: 100,
+                    skill_percent: 165,
+                    color: 'green',
+                },
+                // {
+                //     boss_damage: 100,
+                //     crit: 120,
+                //     skill_percent: 160,
+                //     color: 'red',
+                // },
+                // {
+                //     boss_damage: 110,
+                //     crit: 100,
+                //     skill_percent: 160,
+                //     color: 'green',
+                // },
+            ]
+
+            for (let item of temp) {
+
+                this.crit = item.crit ? item.crit : this.crit;;
+                this.boss_damage = item.boss_damage ? item.boss_damage : this.boss_damage;
+                this.skill_percent = item.skill_percent;
+                console.log('%c ' + `爆擊${item.crit} BOSS傷${item.boss_damage} 技能倍率${item.skill_percent}`, `color:${item.color}`, this.crit_damage());
+
+
+            }
+
+
+
 
         }
 

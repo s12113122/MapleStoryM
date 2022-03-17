@@ -16,7 +16,16 @@
 <body>
 
     <div id="app">
+        <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff"
+            active-text-color="#ffd04b">
 
+            <el-menu-item index="1"><a href="https://s12113122.github.io/MapleStoryM/core.html" target="_blank">尋找核心</a>
+            </el-menu-item>
+            <el-menu-item index="2"><a href="https://s12113122.github.io/MapleStoryM/getPet.html"
+                    target="_blank">寵物抽抽樂</a></el-menu-item>
+            <el-menu-item index="3"><a href="https://s12113122.github.io/MapleStoryM/status.html"
+                    target="_blank">體檢中心</a></el-menu-item>
+        </el-menu>
         <div class="container p-2 w-100">
             <div class="row">
                 <div class="col-12 text-center">
@@ -46,8 +55,7 @@
                             <el-table-column label="機率">
                                 <template slot-scope="scope">
                                     <el-input-number style="margin-left:8px" v-model="scope.row.p"
-                                        controls-position="right" :step="0.01"
-                                       >
+                                        controls-position="right" :step="0.01">
                                     </el-input-number>
 
                                 </template>
@@ -63,7 +71,8 @@
 
                             <el-table-column label="刪除">
                                 <template slot-scope="scope">
-                                    <el-button        @click="tableData.splice(scope.$index, 1)"  size="mini" type="danger" icon="el-icon-delete"></el-button>
+                                    <el-button @click="tableData.splice(scope.$index, 1)" size="mini" type="danger"
+                                        icon="el-icon-delete"></el-button>
                                 </template>
                             </el-table-column>
 
