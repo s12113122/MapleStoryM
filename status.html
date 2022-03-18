@@ -19,7 +19,14 @@
         }
     </style>
     <div id="app">
+        <el-menu class="el-menu-demo" mode="horizontal" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
 
+            <el-menu-item index="1"><a href="https://s12113122.github.io/MapleStoryM/core.html" target="_blank">尋找核心</a>
+            </el-menu-item>
+            <el-menu-item index="2"><a href="https://s12113122.github.io/MapleStoryM/getPet.html" target="_blank">寵物抽抽樂</a></el-menu-item>
+            <el-menu-item index="3"><a href="https://s12113122.github.io/MapleStoryM/status.html" target="_blank">體檢中心</a></el-menu-item>
+            <el-menu-item index="3"><a href="https://s12113122.github.io/MapleStoryM/addition.html" target="_blank">追加/物魔傷</a></el-menu-item>
+        </el-menu>
         <div class="container p-2 w-100">
             <div class="row">
 
@@ -128,14 +135,14 @@
                 const normal = this.attack * (this.skill_percent / 100) * (1 + (this.damage / 100)) *
                     (1 + (this.attack_percent / 100) + (this.skill_percent / 100) * ((this.boss_damage / 100) + 0.1 * 0)) * (1 + (this.finally_attack / 100))
                 const total = normal * (1 + (this.crit / 100) + 0.2)
-                return Number(total).toFixed(2);
+                return Number(total).toFixed(4);
             },
             expect() {
                 const normal = this.attack * (this.skill_percent / 100) * (1 + (this.damage / 100)) *
                     (1 + (this.attack_percent / 100) + (this.skill_percent / 100) * ((this.boss_damage / 100) + 0.1 * 0)) * (1 + (this.finally_attack / 100))
                 const crit_damage = normal * (1 + (this.crit / 100) + 0.2);
                 const total = (1 - (this.crit_percent / 100)) * normal + (this.crit_percent / 100) * crit_damage;
-                return Number(total).toFixed(2);
+                return Number(total).toFixed(4);
             }
 
         },
