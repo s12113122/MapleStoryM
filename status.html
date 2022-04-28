@@ -154,6 +154,16 @@
 
             <el-divider>隊友真給力區</el-divider>
 
+            <el-checkbox-group v-model="skill_select" size="medium">
+              <el-checkbox-button
+                @change="getSkill($event,item)"
+                v-for="(item,index) in skills"
+                :key="index"
+                :label="item"
+                >{{ item }}</el-checkbox-button
+              >
+            </el-checkbox-group>
+
             <div class="row mt-1">
               <!-- attack * skill_percent * (1+damage) *(1+attack_percent+skill_percent*(boss_damage+10%*0)) * (1+finally_attack) -->
               <div
@@ -203,6 +213,19 @@
           "海蜇皮",
           "豬肉/蝸牛",
           "魔王密藥",
+        ],
+        skill_select: [],
+        skills: [
+          "進階祝福",
+          "最終極速",
+          "憤怒",
+          "戰鬥命令",
+          "精神強化",
+          "團隊精神",
+          "潛水回來吧",
+          "灼熱地帶",
+          "猴子的魔法",
+          "咆哮",
         ],
         // 表功
         attack: 36104,
@@ -283,9 +306,72 @@
             default:
               throw new Error();
           }
+        },
 
-          console.log("e", e);
-          console.log("item", item);
+        // 取得藥品
+        getSkill(e, item) {
+          switch (item) {
+            case "進階祝福":
+              this.boss_damage = e
+                ? Number(this.boss_damage) + 15
+                : Number(this.boss_damage) - 15;
+              this.attack_percent = e
+                ? Number(this.attack_percent) + 35
+                : Number(this.attack_percent) - 35;
+              break;
+            case "最終極速":
+              this.boss_damage = e
+                ? Number(this.boss_damage) + 9.6
+                : Number(this.boss_damage) - 9.6;
+              break;
+            case "憤怒":
+              this.attack_percent = e
+                ? Number(this.attack_percent) + 21
+                : Number(this.attack_percent) - 21;
+              break;
+            case "戰鬥命令":
+              this.damage = e
+                ? Number(this.damage) + 15
+                : Number(this.damage) - 15;
+              break;
+            case "精神強化":
+              this.damage = e
+                ? Number(this.damage) + 10
+                : Number(this.damage) - 10;
+              break;
+            case "團隊精神":
+              this.attack_percent = e
+                ? Number(this.attack_percent) + 21.6
+                : Number(this.attack_percent) - 21.6;
+              break;
+            case "潛水回來吧":
+              this.damage = e
+                ? Number(this.damage) + 15
+                : Number(this.damage) - 15;
+              break;
+            case "灼熱地帶":
+              this.attack_percent = e
+                ? Number(this.attack_percent) + 20
+                : Number(this.attack_percent) - 20;
+              this.damage = e
+                ? Number(this.damage) + 5
+                : Number(this.damage) - 5;
+              break;
+            case "猴子的魔法":
+              this.attack_percent = e
+                ? Number(this.attack_percent) + 25
+                : Number(this.attack_percent) - 25;
+              break;
+            case "咆哮":
+              this.attack_percent = e
+                ? Number(this.attack_percent) + 15
+                : Number(this.attack_percent) - 15;
+
+              break;
+
+            default:
+              throw new Error();
+          }
         },
 
         normal() {
