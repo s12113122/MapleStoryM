@@ -79,12 +79,18 @@
             </div>
             <div class="row">
               <div class="col-12 col-md-4 text-center mb-1">
-                <el-input type="number" placeholder="物/魔攻" v-model="attack">
+                <el-input
+                  @change="save('attack')"
+                  type="number"
+                  placeholder="物/魔攻"
+                  v-model="attack"
+                >
                   <template slot="prepend">物/魔攻</template>
                 </el-input>
               </div>
               <div class="col-12 col-md-4 text-center mb-1">
                 <el-input
+                  @change="save('attack_percent')"
                   type="number"
                   placeholder="物/魔攻%"
                   v-model="attack_percent"
@@ -93,12 +99,18 @@
                 </el-input>
               </div>
               <div class="col-12 col-md-4 text-center mb-1">
-                <el-input type="number" placeholder="物/魔傷%" v-model="damage">
+                <el-input
+                  @change="save('damage')"
+                  type="number"
+                  placeholder="物/魔傷%"
+                  v-model="damage"
+                >
                   <template slot="prepend">物/魔傷%</template>
                 </el-input>
               </div>
               <div class="col-12 col-md-4 text-center mb-1">
                 <el-input
+                  @change="save('boss_damage')"
                   type="number"
                   placeholder="B傷%"
                   v-model="boss_damage"
@@ -107,12 +119,18 @@
                 </el-input>
               </div>
               <div class="col-12 col-md-4 text-center mb-1">
-                <el-input type="number" placeholder="爆傷%" v-model="crit">
+                <el-input
+                  @change="save('crit')"
+                  type="number"
+                  placeholder="爆傷%"
+                  v-model="crit"
+                >
                   <template slot="prepend">爆傷%</template>
                 </el-input>
               </div>
               <div class="col-12 col-md-4 text-center mb-1">
                 <el-input
+                  @change="save('skill_percent')"
                   type="number"
                   placeholder="技能傷害%"
                   v-model="skill_percent"
@@ -123,6 +141,7 @@
 
               <div class="col-12 col-md-4 text-center mb-1">
                 <el-input
+                  @change="save('finally_attack')"
                   type="number"
                   placeholder="終傷%"
                   v-model="finally_attack"
@@ -133,6 +152,7 @@
 
               <div class="col-12 col-md-4 text-center mb-1">
                 <el-input
+                  @change="save('crit_percent')"
                   type="number"
                   placeholder="爆率"
                   v-model="crit_percent"
@@ -396,6 +416,7 @@
             (1 + this.finally_attack / 100);
           const total = normal * (1 + this.crit / 100 + 0.2);
           return Number(total).toFixed(4);
+          console.log("aa");
         },
         expect() {
           const normal =
@@ -415,8 +436,37 @@
             (crit_percent / 100) * crit_damage;
           return Number(total).toFixed(4);
         },
+        save(key) {
+          localStorage.setItem(key, this[key]);
+        },
       },
-      mounted() {},
+      mounted() {
+        // 表功
+        this.attack = Number(localStorage.getItem("attack"))
+          ? Number(localStorage.getItem("attack"))
+          : this.attack;
+        this.attack_percent = Number(localStorage.getItem("attack_percent"))
+          ? Number(localStorage.getItem("attack_percent"))
+          : this.attack_percent;
+        this.damage = Number(localStorage.getItem("damage"))
+          ? Number(localStorage.getItem("damage"))
+          : this.damage;
+        this.boss_damage = Number(localStorage.getItem("boss_damage"))
+          ? Number(localStorage.getItem("boss_damage"))
+          : this.boss_damage;
+        this.crit = Number(localStorage.getItem("crit"))
+          ? Number(localStorage.getItem("crit"))
+          : this.crit;
+        this.skill_percent = Number(localStorage.getItem("skill_percent"))
+          ? Number(localStorage.getItem("skill_percent"))
+          : this.skill_percent;
+        this.finally_attack = Number(localStorage.getItem("finally_attack"))
+          ? Number(localStorage.getItem("finally_attack"))
+          : this.finally_attack;
+        this.crit_percent = Number(localStorage.getItem("crit_percent"))
+          ? Number(localStorage.getItem("crit_percent"))
+          : this.crit_percent;
+      },
     });
   </script>
 
