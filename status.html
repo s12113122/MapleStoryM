@@ -246,6 +246,7 @@
           "灼熱地帶",
           "猴子的魔法",
           "咆哮",
+          "瑪哈祝福",
         ],
         // 表功
         attack: 36104,
@@ -386,6 +387,11 @@
               this.attack_percent = e
                 ? Number(this.attack_percent) + 15
                 : Number(this.attack_percent) - 15;
+              break;
+            case "瑪哈祝福":
+              this.crit = e
+                ? Number(this.crit) + 10
+                : Number(this.crit) - 10;
 
               break;
 
