@@ -64,6 +64,13 @@
             >追加/物魔傷</a
           ></el-menu-item
         >
+        <el-menu-item index="5"
+          ><a
+            href="https://s12113122.github.io/MapleStoryM/boos_def.html"
+            target="_blank"
+            >王的無視</a
+          ></el-menu-item
+        >
       </el-menu>
       <div class="container p-2 w-100">
         <div class="row">
@@ -389,9 +396,7 @@
                 : Number(this.attack_percent) - 15;
               break;
             case "瑪哈祝福":
-              this.crit = e
-                ? Number(this.crit) + 10
-                : Number(this.crit) - 10;
+              this.crit = e ? Number(this.crit) + 10 : Number(this.crit) - 10;
 
               break;
 
