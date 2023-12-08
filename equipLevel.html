@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0"
+    />
+
+    <!-- import CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <!-- Bootstrap CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+      integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+      crossorigin="anonymous"
+    />
+    <title>快樂超越去</title>
+
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="https://play-lh.googleusercontent.com/xAbhEL3iUCBQFM8SadRvyeYbtIiJvQdxDaexdX8aH0Tsq9nAUjfxI5yyjsO8EQuE2p8=w240-h480-rw"
+    />
+  </head>
+
+  <body>
+    <div id="app">
+      <el-menu
+        class="el-menu-demo"
+        mode="horizontal"
+        background-color="#545c64"
+        text-color="#fff"
+        active-text-color="#ffd04b"
+      >
+        <el-menu-item index="1"
+          ><a
+            href="https://s12113122.github.io/MapleStoryM/AbsoLab.html"
+            target="_blank"
+            >快樂航海去</a
+          >
+        </el-menu-item>
+      </el-menu>
+      <div class="container p-2 w-100">
+        <div class="row">
+          <div class="col-12 text-center">
+            <h2 style="color: #f56c6c">快樂超越去</h2>
+            <span>
+              計算邏輯:目標等級低於起始等級開始遞迴，當前失敗次數等於五時做扣除，每失敗一次而外成功機率+5不超過+20
+            </span>
+            <div style="color: #f56c6c">
+              此處機率只是js簡單的Math.random 僅供參考 詳請依照楓之谷M為主
+            </div>
+            <el-form :inline="true" label-position="left">
+              <el-form-item label="裝備起始等級">
+                <el-input-number
+                  :min="30"
+                  class="w-100"
+                  placeholder="裝備起始等級"
+                  v-model="equipLevelMin"
+                ></el-input-number>
+              </el-form-item>
+              <el-form-item label="裝備目標等級">
+                <el-input-number
+                  :min="30"
+                  class="w-100"
+                  placeholder="裝備目標等級"
+                  v-model="equipLevelMax"
+                ></el-input-number>
+              </el-form-item>
+
+              <el-form-item label="超越%數">
+                <el-input-number
+                  class="w-100"
+                  placeholder="超越%數"
+                  v-model="strengthen"
+                ></el-input-number>
+              </el-form-item>
+
+              <el-form-item label="扣除%數">
+                <el-input-number
+                  class="w-100"
+                  placeholder="扣除%數"
+                  v-model="deduct"
+                ></el-input-number>
+              </el-form-item>
+              <el-form-item label="當前超越失敗次數">
+                <el-input-number
+                  :max="5"
+                  :min="0"
+                  class="w-100"
+                  placeholder="當前超越失敗次數"
+                  v-model="current_deduct"
+                ></el-input-number>
+              </el-form-item>
+            </el-form>
+
+            <el-button @click="showTestDialog = true">測試</el-button>
+
+            <el-button @click="goStar">單次開始</el-button>
+
+            <h2>歷程記錄</h2>
+            <!-- <span>總次數:{{record.length}} </span>
+            <span>破壞次數:{{destroy_sum}} </span>
+            <span v-if="record.length"
+              >總金額:{{formatNumber(record[record.length-1].price)}}
+            </span> -->
+
+            <el-table :data="record" style="width: 100%">
+              <el-table-column prop="$index" label="次數">
+                <template slot-scope="scope">
+                  <span> {{scope.$index+1}} </span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="equipLevelMin" label="裝備等級">
+              </el-table-column>
+              <el-table-column prop="current_deduct" label="超越失敗次數">
+              </el-table-column>
+              <el-table-column prop="strengthen_sum" label="超越次數">
+              </el-table-column>
+              <el-table-column prop="deduct_sum" label="扣除次數">
+              </el-table-column>
+              <el-table-column prop="strengthen_bouns" label="當前失敗加乘">
+              </el-table-column>
+            </el-table>
+          </div>
+        </div>
+
+        <!--  the test dialog -->
+        <el-dialog
+          title="無情測試機器"
+          :visible.sync="showTestDialog"
+          width="100%"
+          center
+        >
+          <div style="text-align: center">
+            <span>要測試幾次呢？</span>
+
+            <el-input-number
+              controls-position="right"
+              :min="1"
+              v-model="chanceInputStep"
+            >
+            </el-input-number>
+            <el-button class="m-1" type="" @click="goTest">模擬次數</el-button>
+
+            <div>
+              <h2>測試結果</h2>
+              <el-tag v-if="testRecord.length">
+                平均超越:{{ strengthenReduce(testRecord) }}
+              </el-tag>
+              <el-tag v-if="testRecord.length">
+                平均扣除:{{ deductReduce(testRecord) }}
+              </el-tag>
+
+              <el-table :data="testRecord" style="width: 100%">
+                <el-table-column prop="strengthen_sum" label="超越次數">
+                </el-table-column>
+                <el-table-column prop="equipLevelMin" label="裝備等級">
+                </el-table-column>
+                <el-table-column prop="current_deduct" label="最後失敗次數">
+                </el-table-column>
+                <el-table-column prop="deduct_sum" label="扣除次數">
+                </el-table-column>
+              </el-table>
+            </div>
+          </div>
+        </el-dialog>
+      </div>
+    </div>
+  </body>
+
+  <!-- import Vue before Element -->
+  <script src="https://unpkg.com/vue@2"></script>
+  <!-- import JavaScript -->
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+  <script>
+    var app = new Vue({
+      el: "#app",
+      data: {
+        equipLevelMin: 40,
+        equipLevelMax: 50,
+        deduct: 30,
+        current_deduct: 0,
+        strengthen: 30,
+        tableData: [
+          {
+            star: 1,
+            name: ["UP", "keep", "DOWN", "destroy"],
+            itemsWeight: [100, 0, 0, 0],
+            price: 5000,
+          },
+          {
+            star: 2,
+            name: ["UP", "keep", "DOWN", "destroy"],
+            itemsWeight: [95, 5, 0, 0],
+            price: 10000,
+          },
+          {
+            star: 3,
+            name: ["UP", "keep", "DOWN", "destroy"],
+            itemsWeight: [90, 10, 0, 0],
+            price: 20000,
+          },
+          {
+            star: 4,
+            name: ["UP", "keep", "DOWN", "destroy"],
+            itemsWeight: [85, 15, 0, 0],
+            price: 35000,
+          },
+          {
+            star: 5,
+            name: ["UP", "keep", "DOWN", "destroy"],
+            itemsWeight: [80, 20, 0, 0],
+            price: 50000,
+          },
+        ],
+        itemStarData: {},
+        record: [],
+        testRecord: [],
+        chanceInputStep: 1000,
+        showTestDialog: false,
+        destroy_sum: 0,
+        max_amount: 0,
+        checked1: false,
+      },
+      methods: {
+        priceReduce(testArray) {
+          const values = testArray.map((item) => item.price);
+          const sum = values.reduce(
+            (previous, current) => (current += previous)
+          );
+          const avg = sum / values.length;
+          return this.formatNumber(avg);
+        },
+        countReduce(testArray) {
+          const values = testArray.map((item) => item.count);
+          const sum = values.reduce(
+            (previous, current) => (current += previous)
+          );
+          const avg = sum / values.length;
+          return this.formatNumber(avg);
+        },
+
+        strengthenReduce(testArray) {
+          const values = testArray.map((item) => item.strengthen_sum);
+          console.log("testArray", testArray);
+          const sum = values.reduce(
+            (previous, current) => (current += previous)
+          );
+          const avg = sum / values.length;
+          return avg;
+        },
+        deductReduce(testArray) {
+          const values = testArray.map((item) => item.deduct_sum);
+          const sum = values.reduce(
+            (previous, current) => (current += previous)
+          );
+          const avg = sum / values.length;
+          return avg;
+        },
+        destroySum(testArray) {
+          const values = testArray.map((item) => item.destroy_sum);
+          console.log("testArray", testArray);
+          const sum = values.reduce(
+            (previous, current) => (current += previous)
+          );
+          return sum;
+        },
+
+        goTest() {
+          this.testRecord = [];
+
+          for (let i = 0; i < this.chanceInputStep; i++) {
+            this.goStar();
+          }
+        },
+
+        goStar() {
+          this.itemStarData.equipLevelMin = this.equipLevelMin;
+          this.itemStarData.equipLevelMax = this.equipLevelMax;
+          this.itemStarData.deduct = this.deduct;
+          this.itemStarData.current_deduct = this.current_deduct;
+          this.itemStarData.strengthen = this.strengthen;
+          // 超越次數
+          this.itemStarData.strengthen_sum = 0;
+          // 扣除次數
+          this.itemStarData.deduct_sum = 0;
+          // 超越優惠次數
+          this.itemStarData.strengthen_bouns = 0;
+          this.record = [];
+          this.goRun();
+        },
+        async goRun() {
+          const res = await this.Recursion();
+        },
+        async Recursion() {
+          // 如果達成裝備等級則回傳
+          if (
+            this.itemStarData.equipLevelMin === this.itemStarData.equipLevelMax
+          ) {
+            const copy = JSON.parse(JSON.stringify(this.itemStarData));
+            this.testRecord.push(copy);
+            return this.itemStarData;
+          }
+          // 執行扣除
+          if (
+            this.itemStarData.equipLevelMin !==
+              this.itemStarData.equipLevelMax &&
+            this.itemStarData.current_deduct === 5
+          ) {
+            this.itemStarData.deduct_sum = this.itemStarData.deduct_sum + 1;
+
+            const deduct = this.weightedRandom(this.itemStarData.deduct);
+            // 如果成功扣除則扣除數-1
+            if (deduct) {
+              this.itemStarData.current_deduct =
+                this.itemStarData.current_deduct - 1;
+            }
+          }
+
+          // 開始超越
+          if (
+            this.itemStarData.equipLevelMin !==
+              this.itemStarData.equipLevelMax &&
+            this.itemStarData.current_deduct < 5
+          ) {
+            this.itemStarData.strengthen_sum =
+              this.itemStarData.strengthen_sum + 1;
+
+            // 把失敗的buons加上去
+            const strengthen_f =
+              this.itemStarData.strengthen + this.itemStarData.strengthen_bouns;
+
+            const res = this.weightedRandom(this.itemStarData.strengthen);
+            if (res) {
+              this.itemStarData.equipLevelMin =
+                this.itemStarData.equipLevelMin + 2;
+              // 把bouns清空為0
+              this.itemStarData.strengthen_bouns = 0;
+            } else {
+              this.itemStarData.strengthen_bouns =
+                this.itemStarData.strengthen_bouns < 20
+                  ? this.itemStarData.strengthen_bouns + 5
+                  : this.itemStarData.strengthen_bouns;
+
+              this.itemStarData.current_deduct =
+                this.itemStarData.current_deduct + 1;
+            }
+          }
+          const copy = JSON.parse(JSON.stringify(this.itemStarData));
+          this.record.push(copy);
+          this.Recursion();
+        },
+
+        // 計算機率
+        weightedRandom(successPercentage) {
+          // 生成介於0到100之間的隨機數
+          const randomNumber = Math.random() * 100;
+          // 如果隨機數小於成功百分比，則視為成功，否則視為失敗
+          const Random = randomNumber < successPercentage;
+
+          return Random;
+        },
+        formatNumber(num, precision, separator) {
+          let parts;
+          // 判斷是否為數字
+          // eslint-disable-next-line no-restricted-globals
+          if (!isNaN(parseFloat(num)) && isFinite(num)) {
+            // 把類似 .5, 5. 之類的數據轉化成0.5, 5, 為數據精度處理做準, 至於為什麼
+            // 不在判斷中直接寫 if (!isNaN(num = parseFloat(num)) && isFinite(num))
+            // 是因為parseFloat有一個奇怪的精度問題, 比如 parseFloat(12312312.1234567119)
+            // 的值變成了 12312312.123456713
+            // eslint-disable-next-line no-param-reassign
+            num = Number(num);
+            // 處理小數點位數
+            // eslint-disable-next-line no-param-reassign
+            num = (
+              typeof precision !== "undefined" ? num.toFixed(precision) : num
+            ).toString();
+            // 分離數字的小數部分和整數部分
+            parts = num.split(".");
+            // 整數部分加[separator]分隔, 借用一個著名的正則表達式
+            parts[0] = parts[0]
+              .toString()
+              .replace(/(\d)(?=(\d{3})+(?!\d))/g, `$1${separator || ","}`);
+
+            return parts.join(".");
+          }
+          return 0;
+        },
+      },
+      mounted() {},
+    });
+  </script>
+
+  <style>
+    .testprogress {
+      margin-top: 1em;
+      text-align: center;
+    }
+
+    pre {
+      margin-top: 1em;
+      text-align: left;
+    }
+  </style>
+
+  <!-- Optional JavaScript; choose one of the two! -->
+
+  <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+  <script
+    src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"
+  ></script>
+  <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script> -->
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+    crossorigin="anonymous"
+  />
+
+  <!-- Option 2: jQuery, Popper.js, and Bootstrap JS
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" crossorigin="anonymous"></script>
+    -->
+</html>
