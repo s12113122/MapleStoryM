@@ -19,7 +19,7 @@
       integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
       crossorigin="anonymous"
     />
-    <title>快樂超越去</title>
+    <title>00000000000097快樂超越去</title>
 
     <link
       rel="icon"
@@ -48,7 +48,7 @@
       <div class="container p-2 w-100">
         <div class="row">
           <div class="col-12 text-center">
-            <h2 style="color: #f56c6c">快樂超越去</h2>
+            <h2 style="color: #f56c6c">00000000000097快樂超越去</h2>
             <span>
               計算邏輯:目標等級低於起始等級開始遞迴，當前失敗次數等於五時做扣除，每失敗一次而外成功機率+5不超過+20
             </span>
@@ -312,7 +312,7 @@
           if (
             this.itemStarData.equipLevelMin !==
               this.itemStarData.equipLevelMax &&
-            this.itemStarData.current_deduct === 5
+            this.itemStarData.current_deduct === 7
           ) {
             this.itemStarData.deduct_sum = this.itemStarData.deduct_sum + 1;
 
@@ -328,7 +328,7 @@
           if (
             this.itemStarData.equipLevelMin !==
               this.itemStarData.equipLevelMax &&
-            this.itemStarData.current_deduct < 5
+            this.itemStarData.current_deduct < 7
           ) {
             this.itemStarData.strengthen_sum =
               this.itemStarData.strengthen_sum + 1;
@@ -345,7 +345,7 @@
               this.itemStarData.strengthen_bouns = 0;
             } else {
               this.itemStarData.strengthen_bouns =
-                this.itemStarData.strengthen_bouns < 20
+                this.itemStarData.strengthen_bouns < 40
                   ? this.itemStarData.strengthen_bouns + 5
                   : this.itemStarData.strengthen_bouns;
 
